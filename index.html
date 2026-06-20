@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Amazon Clone</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <!-- Logo -->
+    <a href="#" class="logo" onclick="showPage('home')">
+      <span class="logo-text">amazon</span><span class="logo-dot">.in</span>
+    </a>
+
+    <!-- Delivery Location -->
+    <div class="location">
+      <i class="fas fa-map-marker-alt"></i>
+      <div>
+        <span class="loc-top">Deliver to</span>
+        <span class="loc-bottom">India</span>
+      </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <select class="search-category" id="searchCategory">
+        <option>All</option>
+        <option>Electronics</option>
+        <option>Clothing</option>
+        <option>Books</option>
+        <option>Home</option>
+        <option>Toys</option>
+      </select>
+      <input type="text" id="searchInput" placeholder="Search Amazon.in" oninput="liveSearch()" onkeydown="if(event.key==='Enter') doSearch()"/>
+      <button onclick="doSearch()"><i class="fas fa-search"></i></button>
+    </div>
+
+    <!-- Account -->
+    <div class="nav-item" onclick="toggleAccount()">
+      <span class="nav-top">Hello, sign in</span>
+      <span class="nav-bottom">Account &amp; Lists <i class="fas fa-caret-down"></i></span>
+      <div class="dropdown" id="accountDropdown">
+        <a href="#" onclick="showPage('home')">Sign In</a>
+        <a href="#" onclick="showPage('orders')">Your Orders</a>
+        <a href="#" onclick="showPage('wishlist')">Wishlist</a>
+      </div>
+    </div>
+
+    <!-- Orders -->
+    <div class="nav-item" onclick="showPage('orders')">
+      <span class="nav-top">Returns</span>
+      <span class="nav-bottom">&amp; Orders</span>
+    </div>
+
+    <!-- Cart -->
+    <div class="cart-icon" onclick="showPage('cart')">
+      <i class="fas fa-shopping-cart"></i>
+      <span class="cart-count" id="cartCount">0</span>
+      <span class="cart-label">Cart</span>
+    </div>
+  </nav>
+
+  <!-- ===== SUB-NAV ===== -->
+  <div class="sub-nav">
+    <span onclick="filterCategory('All')"><i class="fas fa-bars"></i> All</span>
+    <span onclick="filterCategory('Electronics')">Electronics</span>
+    <span onclick="filterCategory('Clothing')">Fashion</span>
+    <span onclick="filterCategory('Home')">Home &amp; Kitchen</span>
+    <span onclick="filterCategory('Books')">Books</span>
+    <span onclick="filterCategory('Toys')">Toys</span>
+    <span onclick="filterCategory('All')">Today's Deals</span>
+    <span onclick="filterCategory('All')">Customer Service</span>
+  </div>
+
+  <!-- ===== SEARCH SUGGESTIONS ===== -->
+  <div id="searchSuggestions" class="search-suggestions"></div>
+
+  <!-- ===== PAGES ===== -->
+
+  <!-- HOME PAGE -->
+  <div id="homePage" class="page">
+    <!-- Hero Slider -->
+    <div class="hero">
+      <div class="slider" id="slider">
+        <div class="slide" style="background: linear-gradient(135deg, #232f3e, #37475a)">
+          <div class="slide-content">
+            <h1>Deals of the Day</h1>
+            <p>Up to 70% off on Electronics</p>
+            <button onclick="filterCategory('Electronics')">Shop Now</button>
+          </div>
+        </div>
+        <div class="slide" style="background: linear-gradient(135deg, #c45500, #ff6600)">
+          <div class="slide-content">
+            <h1>Fashion Sale</h1>
+            <p>Trendy styles starting ₹199</p>
+            <button onclick="filterCategory('Clothing')">Explore</button>
+          </div>
+        </div>
+        <div class="slide" style="background: linear-gradient(135deg, #003087, #0070c0)">
+          <div class="slide-content">
+            <h1>Home Essentials</h1>
+            <p>Upgrade your living space</p>
+            <button onclick="filterCategory('Home')">Discover</button>
+          </div>
+        </div>
+      </div>
+      <button class="slider-btn prev" onclick="moveSlide(-1)">&#10094;</button>
+      <button class="slider-btn next" onclick="moveSlide(1)">&#10095;</button>
+      <div class="slider-dots" id="sliderDots"></div>
+    </div>
+
+    <!-- Category Cards -->
+    <section class="category-section">
+      <h2>Shop by Category</h2>
+      <div class="category-grid">
+        <div class="category-card" onclick="filterCategory('Electronics')">
+          <i class="fas fa-laptop" style="color:#ff6600"></i>
+          <span>Electronics</span>
+        </div>
+        <div class="category-card" onclick="filterCategory('Clothing')">
+          <i class="fas fa-tshirt" style="color:#0070c0"></i>
+          <span>Fashion</span>
+        </div>
+        <div class="category-card" onclick="filterCategory('Home')">
+          <i class="fas fa-home" style="color:#4caf50"></i>
+          <span>Home</span>
+        </div>
+        <div class="category-card" onclick="filterCategory('Books')">
+          <i class="fas fa-book" style="color:#9c27b0"></i>
+          <span>Books</span>
+        </div>
+        <div class="category-card" onclick="filterCategory('Toys')">
+          <i class="fas fa-gamepad" style="color:#e91e63"></i>
+          <span>Toys</span>
+        </div>
+        <div class="category-card" onclick="filterCategory('All')">
+          <i class="fas fa-tags" style="color:#ff9800"></i>
+          <span>Deals</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Flash Deal Banner -->
+    <div class="flash-banner">
+      <i class="fas fa-bolt"></i>
+      <span id="flashTimer"></span>
+      <span>left in Flash Sale — Up to 60% off!</span>
+    </div>
+
+    <!-- Products Grid -->
+    <section class="products-section">
+      <div class="products-header">
+        <h2 id="productsTitle">Featured Products</h2>
+        <div class="sort-filter">
+          <label>Sort by:</label>
+          <select id="sortSelect" onchange="sortProducts()">
+            <option value="default">Featured</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+            <option value="rating">Avg. Customer Review</option>
+          </select>
+        </div>
+      </div>
+      <div class="products-grid" id="productsGrid"></div>
+    </section>
+  </div>
+
+  <!-- PRODUCT DETAIL PAGE -->
+  <div id="productPage" class="page hidden">
+    <div class="product-detail" id="productDetail"></div>
+  </div>
+
+  <!-- CART PAGE -->
+  <div id="cartPage" class="page hidden">
+    <div class="cart-container">
+      <h2><i class="fas fa-shopping-cart"></i> Shopping Cart</h2>
+      <div id="cartItems"></div>
+      <div class="cart-summary" id="cartSummary"></div>
+    </div>
+  </div>
+
+  <!-- ORDERS PAGE -->
+  <div id="ordersPage" class="page hidden">
+    <div class="orders-container">
+      <h2><i class="fas fa-box"></i> Your Orders</h2>
+      <div id="ordersList"></div>
+    </div>
+  </div>
+
+  <!-- WISHLIST PAGE -->
+  <div id="wishlistPage" class="page hidden">
+    <div class="wishlist-container">
+      <h2><i class="fas fa-heart"></i> Your Wishlist</h2>
+      <div class="products-grid" id="wishlistGrid"></div>
+    </div>
+  </div>
+
+  <!-- CHECKOUT PAGE -->
+  <div id="checkoutPage" class="page hidden">
+    <div class="checkout-container">
+      <h2><i class="fas fa-credit-card"></i> Checkout</h2>
+      <div class="checkout-grid">
+        <div class="checkout-form">
+          <h3>Delivery Address</h3>
+          <input type="text" id="name" placeholder="Full Name" />
+          <input type="text" id="address" placeholder="Address" />
+          <input type="text" id="city" placeholder="City" />
+          <input type="text" id="pincode" placeholder="PIN Code" />
+          <input type="text" id="phone" placeholder="Phone Number" />
+          <h3>Payment Method</h3>
+          <label><input type="radio" name="payment" value="card" checked /> Credit / Debit Card</label>
+          <label><input type="radio" name="payment" value="upi" /> UPI</label>
+          <label><input type="radio" name="payment" value="cod" /> Cash on Delivery</label>
+          <button class="place-order-btn" onclick="placeOrder()">Place Order</button>
+        </div>
+        <div class="order-summary" id="orderSummaryCheckout"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <footer class="footer">
+    <div class="footer-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">Back to top</div>
+    <div class="footer-grid">
+      <div>
+        <h4>Get to Know Us</h4>
+        <ul><li>About Amazon</li><li>Careers</li><li>Press Releases</li></ul>
+      </div>
+      <div>
+        <h4>Connect with Us</h4>
+        <ul><li>Facebook</li><li>Twitter</li><li>Instagram</li></ul>
+      </div>
+      <div>
+        <h4>Make Money with Us</h4>
+        <ul><li>Sell on Amazon</li><li>Become an Affiliate</li></ul>
+      </div>
+      <div>
+        <h4>Let Us Help You</h4>
+        <ul><li>Your Account</li><li>Returns Centre</li><li>Help</li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="logo-text" style="font-size:1.4rem">amazon</span><span class="logo-dot">.in</span>
+      <p>© 2024 Amazon Clone — Built for learning purposes</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
